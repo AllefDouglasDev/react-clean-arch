@@ -2,12 +2,17 @@ import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError
 import { AuthenticationSpy } from '@/presentation/test/MockAuthentication'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 
 import LoginPage from './index'
 
 const makeSut = () => {
   const authenticationSpy = new AuthenticationSpy()
-  const sut = render(<LoginPage authentication={authenticationSpy} />)
+  const sut = render(
+    <MemoryRouter initialEntries={['/sign-in']}>
+      <LoginPage authentication={authenticationSpy} />
+    </MemoryRouter>
+  )
   return { sut, authenticationSpy }
 }
 
