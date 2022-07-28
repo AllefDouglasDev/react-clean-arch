@@ -1,11 +1,11 @@
-import LoginPage from '@/presentation/pages/login'
+import { Router } from '@/presentation/router'
 import GlobalStyle from '@/presentation/styles/GlobalStyle'
 
 function App() {
   return (
     <div className="App">
       <GlobalStyle />
-      <LoginPage />
+      <Router />
     </div>
   )
 }
