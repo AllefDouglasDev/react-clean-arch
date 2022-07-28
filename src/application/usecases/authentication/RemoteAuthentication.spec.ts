@@ -1,4 +1,6 @@
+import { HttpStatusCode } from '@/application/protocols/http/HttpClient'
 import { HttpClientSpy } from '@/application/test/MockHttpClient'
+import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
 import { RemoteAuthentication } from './RemoteAuthentication'
 
 const makeSut = (url: string = 'any-url') => {
@@ -24,6 +26,18 @@ describe("RemoteAuthentication", () => {
     await sut.login(accountData)
 
     expect(httpClientSpy.body).toEqual(accountData)
+  })
+
+  it("should throw InvalidCredentialsError when HttpClient returns 401", async () => {
+    const { sut, httpClientSpy } = makeSut()
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.UNAUTHORIZED,
+    }
+    const accountData = { email: 'any-email', password: 'any-password' }
+
+    const promise = sut.login(accountData)
+
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
   })
 })
 
