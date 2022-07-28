@@ -1,15 +1,21 @@
 import { useState } from 'react'
 import { Button } from '@/presentation/components/Form/Button'
 import { Input } from '@/presentation/components/Form/Input'
+import { Authentication } from '@/domain/usecases/Authentication'
 
 import * as S from './styles'
 
-export function LoginForm() {
+type LoginFormProps = {
+  authentication: Authentication
+}
+
+export function LoginForm({ authentication }: LoginFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault()
+    await authentication.login({ email, password })
   }
   
   return (
@@ -19,7 +25,7 @@ export function LoginForm() {
         name="email" 
         type="email"
         label="E-mail"
-        placeholder="example@email.com"  
+        placeholder="email"  
         value={email} 
         onChange={e => setEmail(e.target.value)}
       />

@@ -18,3 +18,8 @@ export const Label = styled.label`
   font-size: 16px;
   color: white;
 `
+
+export const Error = styled.span`
+  font-size: 16px;
+  color: red;
+`
