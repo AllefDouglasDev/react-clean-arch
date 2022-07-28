@@ -11,8 +11,19 @@ describe("RemoteAuthentication", () => {
   it("should call HttpClient with correct URL", async () => {
     const url = "other-url"
     const { sut, httpClientSpy } = makeSut(url)
-    await sut.login()
+
+    await sut.login({ email: 'any-email', password: 'any-password' })
+
     expect(httpClientSpy.url).toBe(url)
+  })
+
+  it("should call HttpClient with correct body", async () => {
+    const { sut, httpClientSpy } = makeSut()
+    const accountData = { email: 'any-email', password: 'any-password' }
+
+    await sut.login(accountData)
+
+    expect(httpClientSpy.body).toEqual(accountData)
   })
 })
 
