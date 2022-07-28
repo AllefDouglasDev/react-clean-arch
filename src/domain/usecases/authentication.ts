@@ -1,4 +1,4 @@
-import { LoginRequestDto, LoginResponseDto } from "../models/api-dto"
+import { LoginRequestDto, LoginResponseDto } from "@/domain/models/api-dto"
 
 export interface Authentication {
   login(input: Authentication.Input): Promise<Authentication.Output>

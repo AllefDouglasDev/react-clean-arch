@@ -1,4 +1,4 @@
-import { HttpClientSpy } from '../../test/MockHttpClient'
+import { HttpClientSpy } from '@/application/test/MockHttpClient'
 import { RemoteAuthentication } from './RemoteAuthentication'
 
 const makeSut = (url: string = 'any-url') => {
