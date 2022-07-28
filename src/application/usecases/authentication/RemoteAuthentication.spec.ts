@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '@/application/protocols/http/HttpClient'
 import { HttpClientSpy } from '@/application/test/MockHttpClient'
 import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
+import { UnexpectedError } from '@/domain/errors/UnexpectedError'
 import { RemoteAuthentication } from './RemoteAuthentication'
 
 const makeSut = (url: string = 'any-url') => {
@@ -8,6 +9,12 @@ const makeSut = (url: string = 'any-url') => {
   const sut = new RemoteAuthentication(url, httpClientSpy)
   return { sut, httpClientSpy }
 }
+
+const unexpectedErrors = [
+  HttpStatusCode.NOT_FOUND,
+  HttpStatusCode.BAD_REQUEST,
+  HttpStatusCode.SERVER_ERROR
+]
 
 describe("RemoteAuthentication", () => {
   it("should call HttpClient with correct URL", async () => {
@@ -38,6 +45,16 @@ describe("RemoteAuthentication", () => {
     const promise = sut.login(accountData)
 
     await expect(promise).rejects.toThrow(new InvalidCredentialsError())
+  })
+
+  it.each(unexpectedErrors)("should throw UnexpectedError when HttpClient returns unhandled status code", async (statusCode) => {
+    const { sut, httpClientSpy } = makeSut()
+    httpClientSpy.response = { statusCode }
+    const accountData = { email: 'any-email', password: 'any-password' }
+
+    const promise = sut.login(accountData)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
 
