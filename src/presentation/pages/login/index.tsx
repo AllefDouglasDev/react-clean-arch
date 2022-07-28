@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/presentation/components/Form/Button'
 import { Input } from '@/presentation/components/Form/Input'
 import { Authentication } from '@/domain/usecases/Authentication'
+import { routes } from '@/presentation/router/routes'
 
 import * as S from './styles'
 
@@ -10,6 +12,7 @@ type LoginPageProps = {
 }
 
 export default function LoginPage({ authentication }: LoginPageProps) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +25,7 @@ export default function LoginPage({ authentication }: LoginPageProps) {
     setErrorMessage('')
     try {
       await authentication.login({ email, password })
+      navigate({ pathname: routes.home })
     } catch (error: any) {
       setIsLoading(false)
       setErrorMessage(error.message)
