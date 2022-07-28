@@ -1,14 +1,17 @@
+import { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import { routes } from './routes'
 
-export function Router() {
+type RouterProps = {
+  makeLogin: () => ReactNode
+}
+
+export function Router(props: RouterProps) {
   return (
     <BrowserRouter>
       <Routes>
-        {Object.entries(routes).map(([_, route]) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
+        <Route path={routes.login} element={props.makeLogin()} />
       </Routes>
     </BrowserRouter>
   )

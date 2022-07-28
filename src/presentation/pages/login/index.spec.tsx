@@ -1,23 +1,13 @@
-import { Authentication } from '@/domain/usecases/Authentication'
+import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
+import { AuthenticationSpy } from '@/presentation/test/MockAuthentication'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { LoginForm } from './index'
-
-class AuthenticationSpy implements Authentication {
-  input?: Authentication.Input
-  callsCount: number = 0
-
-  async login(input: Authentication.Input): Promise<Authentication.Output> {
-    this.input = input
-      this.callsCount++
-    return Promise.resolve({ token: '' })
-  }
-}
+import LoginPage from './index'
 
 const makeSut = () => {
   const authenticationSpy = new AuthenticationSpy()
-  const sut = render(<LoginForm authentication={authenticationSpy} />)
+  const sut = render(<LoginPage authentication={authenticationSpy} />)
   return { sut, authenticationSpy }
 }
 
@@ -63,4 +53,18 @@ describe("LoginForm", () => {
     const loadingElement = screen.getByText(/loading.../i)
     expect(loadingElement).toBeDefined()
   })
+
+  it.skip("should render error message when authentication returns error", async () => {
+    const { authenticationSpy } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest.spyOn(authenticationSpy, 'login').mockReturnValueOnce(Promise.reject(error))
+    await fillValidForm()
+    const submitBtn = screen.getByRole('button', { name: 'login' })
+
+    await userEvent.click(submitBtn) 
+
+    const errorElement= screen.getByText(error.message)
+    expect(errorElement).toBeDefined()
+  })
+
 })
