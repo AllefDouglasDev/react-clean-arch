@@ -1,14 +1,16 @@
 import { Authentication } from '@/domain/usecases/Authentication'
-import { render, RenderResult, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { LoginForm } from './index'
 
 class AuthenticationSpy implements Authentication {
   input?: Authentication.Input
+  callsCount: number = 0
 
   async login(input: Authentication.Input): Promise<Authentication.Output> {
     this.input = input
+      this.callsCount++
     return Promise.resolve({ token: '' })
   }
 }
@@ -38,5 +40,27 @@ describe("LoginForm", () => {
     await userEvent.click(submitBtn) 
 
     expect(authenticationSpy.input).toEqual({ email, password })
+  })
+
+  it("should call Authentication only once", async () => {
+    const { authenticationSpy } = makeSut()
+    await fillValidForm()
+    const submitBtn = screen.getByRole('button', { name: 'login' })
+
+    await userEvent.click(submitBtn) 
+    await userEvent.click(submitBtn) 
+
+    expect(authenticationSpy.callsCount).toBe(1)
+  })
+
+  it("should render loading when submitting", async () => {
+    makeSut()
+    await fillValidForm()
+    const submitBtn = screen.getByRole('button', { name: 'login' })
+
+    await userEvent.click(submitBtn) 
+
+    const loadingElement = screen.getByText(/loading.../i)
+    expect(loadingElement).toBeDefined()
   })
 })

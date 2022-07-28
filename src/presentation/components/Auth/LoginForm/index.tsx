@@ -12,9 +12,12 @@ type LoginFormProps = {
 export function LoginForm({ authentication }: LoginFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
+    if (isLoading) return
+    setIsLoading(true)
     await authentication.login({ email, password })
   }
   
@@ -39,6 +42,7 @@ export function LoginForm({ authentication }: LoginFormProps) {
         onChange={e => setPassword(e.target.value)}
       />
       <Button type="submit">login</Button>
+      {isLoading && <span>Loading...</span>}
     </S.Form>
   )
 }
