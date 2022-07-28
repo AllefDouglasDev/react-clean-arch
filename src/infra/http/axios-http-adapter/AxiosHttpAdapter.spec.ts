@@ -1,14 +1,13 @@
-import axios from 'axios'
+import { mockAxios } from '../test/MockAxios'
 
 import { AxiosHttpAdapter } from "./AxiosHttpAdapter"
 
 jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
-const mockedAxiosResult = { data: 'any-body', status: 200 }
-mockedAxios.post.mockResolvedValue(mockedAxiosResult)
 
 const makeSut = () => {
-  return new AxiosHttpAdapter()
+  const mockedAxios = mockAxios()
+  const sut = new AxiosHttpAdapter()
+  return { sut, ...mockedAxios }
 }
 
 describe('AxiosHttpAdapter', () => {
@@ -17,7 +16,7 @@ describe('AxiosHttpAdapter', () => {
       url: 'any-url',
       body: { anyData: 'any-data' }
     }
-    const sut = makeSut()
+    const { sut, mockedAxios } = makeSut()
 
     await sut.post(request)
 
@@ -29,7 +28,7 @@ describe('AxiosHttpAdapter', () => {
       url: 'any-url',
       body: { anyData: 'any-data' }
     }
-    const sut = makeSut()
+    const { sut, mockedAxiosResult} = makeSut()
 
     const response = await sut.post(request)
 
