@@ -1,12 +1,13 @@
 import { Router } from '@/presentation/router'
 import GlobalStyle from '@/presentation/styles/GlobalStyle'
-import { makeLogin } from './factories/pages/login/LoginFactory'
+import { makeHomePage } from './factories/pages/home/HomeFactory'
+import { makeLoginPage } from './factories/pages/login/LoginFactory'
 
 function App() {
   return (
     <div className="App">
       <GlobalStyle />
-      <Router makeLogin={makeLogin} />
+      <Router makeLoginPage={makeLoginPage} makeHomePage={makeHomePage} />
     </div>
   )
 }

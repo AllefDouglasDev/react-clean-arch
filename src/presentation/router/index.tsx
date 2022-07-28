@@ -4,14 +4,16 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { routes } from './routes'
 
 type RouterProps = {
-  makeLogin: () => ReactNode
+  makeHomePage: () => ReactNode
+  makeLoginPage: () => ReactNode
 }
 
 export function Router(props: RouterProps) {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={routes.login} element={props.makeLogin()} />
+        <Route path={routes.home} element={props.makeHomePage()} />
+        <Route path={routes.login} element={props.makeLoginPage()} />
       </Routes>
     </BrowserRouter>
   )
