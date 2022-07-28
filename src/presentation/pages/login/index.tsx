@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import { Button } from '@/presentation/components/Form/Button'
 import { Input } from '@/presentation/components/Form/Input'
 import { Authentication } from '@/domain/usecases/Authentication'
@@ -13,18 +14,16 @@ type LoginPageProps = {
 
 export default function LoginPage({ authentication }: LoginPageProps) {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { register, handleSubmit } = useForm<{ email: string, password: string }>()
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
-  const handleSubmit = async (event: any) => {
-    event.preventDefault()
+  const onSubmit = async (data: { email: string, password: string }) => {
     if (isLoading) return
     setIsLoading(true)
     setErrorMessage('')
     try {
-      await authentication.login({ email, password })
+      await authentication.login(data)
       navigate({ pathname: routes.home })
     } catch (error: any) {
       setIsLoading(false)
@@ -34,24 +33,19 @@ export default function LoginPage({ authentication }: LoginPageProps) {
 
   return (
     <S.Wrapper>
-      <S.Form onSubmit={handleSubmit}>
+      <S.Form onSubmit={handleSubmit(onSubmit)}>
         <S.Title>Login</S.Title>
         <Input
-          name="email" 
           type="email"
           label="E-mail"
           placeholder="email"  
-          value={email} 
-          onChange={e => setEmail(e.target.value)}
+          {...register("email")}
         />
         <Input
-          id="password" 
-          name="password" 
           type="password"
           label="Password"
           placeholder="password" 
-          value={password}
-          onChange={e => setPassword(e.target.value)}
+          {...register("password")}
         />
         <Button type="submit">login</Button>
         {isLoading && <S.Loading>Loading...</S.Loading>}
