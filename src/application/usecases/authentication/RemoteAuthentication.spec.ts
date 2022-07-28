@@ -2,10 +2,11 @@ import { HttpStatusCode } from '@/application/protocols/http/HttpClient'
 import { HttpClientSpy } from '@/application/test/MockHttpClient'
 import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
 import { UnexpectedError } from '@/domain/errors/UnexpectedError'
+import { Authentication } from '@/domain/usecases/Authentication'
 import { RemoteAuthentication } from './RemoteAuthentication'
 
 const makeSut = (url: string = 'any-url') => {
-  const httpClientSpy = new HttpClientSpy()
+  const httpClientSpy = new HttpClientSpy<Authentication.Input, Authentication.Output>()
   const sut = new RemoteAuthentication(url, httpClientSpy)
   return { sut, httpClientSpy }
 }
@@ -37,9 +38,7 @@ describe("RemoteAuthentication", () => {
 
   it("should throw InvalidCredentialsError when HttpClient returns 401", async () => {
     const { sut, httpClientSpy } = makeSut()
-    httpClientSpy.response = {
-      statusCode: HttpStatusCode.UNAUTHORIZED,
-    }
+    httpClientSpy.response = { statusCode: HttpStatusCode.UNAUTHORIZED }
     const accountData = { email: 'any-email', password: 'any-password' }
 
     const promise = sut.login(accountData)
@@ -55,6 +54,20 @@ describe("RemoteAuthentication", () => {
     const promise = sut.login(accountData)
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it("should return an LoginResponseDto when HttpClient return 200", async () => {
+    const { sut, httpClientSpy } = makeSut()
+    const httpResult = { token: 'any-token' }
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.OK,
+      body: httpResult
+    }
+    const accountData = { email: 'any-email', password: 'any-password' }
+
+    const loginResult = await sut.login(accountData)
+
+    expect(loginResult).toEqual(httpResult)
   })
 })
 

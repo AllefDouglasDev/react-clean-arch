@@ -6,17 +6,17 @@ export enum HttpStatusCode {
   SERVER_ERROR = 500,
 }
 
-export type HttpResponse = {
+export type HttpResponse<T = any> = {
   statusCode: HttpStatusCode
-  body?: any
+  body?: T
 }
 
-export type HttpPostClientParams = {
+export type HttpPostClientParams<T = any> = {
   url: string
-  body?: object
+  body?: T
 }
 
-export interface HttpPostClient {
-  post: (params: HttpPostClientParams) => Promise<HttpResponse>
+export interface HttpPostClient<T = any, R = any> {
+  post: (params: HttpPostClientParams<T>) => Promise<HttpResponse<R>>
 }
 
