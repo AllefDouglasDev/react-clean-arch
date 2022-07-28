@@ -28,7 +28,7 @@ describe('AxiosHttpAdapter', () => {
       url: 'any-url',
       body: { anyData: 'any-data' }
     }
-    const { sut, mockedAxiosResult} = makeSut()
+    const { sut, mockedAxiosResult } = makeSut()
 
     const response = await sut.post(request)
 
