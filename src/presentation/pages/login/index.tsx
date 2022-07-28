@@ -19,6 +19,7 @@ export default function LoginPage({ authentication }: LoginPageProps) {
     event.preventDefault()
     if (isLoading) return
     setIsLoading(true)
+    setErrorMessage('')
     try {
       await authentication.login({ email, password })
     } catch (error: any) {
@@ -49,8 +50,8 @@ export default function LoginPage({ authentication }: LoginPageProps) {
           onChange={e => setPassword(e.target.value)}
         />
         <Button type="submit">login</Button>
-        {isLoading && <span>Loading...</span>}
-        {errorMessage && <span>{errorMessage}</span>}
+        {isLoading && <S.Loading>Loading...</S.Loading>}
+        {errorMessage && <S.Error>{errorMessage}</S.Error>}
       </S.Form>
 
     </S.Wrapper>

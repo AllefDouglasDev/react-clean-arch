@@ -23,3 +23,13 @@ export const Title = styled.h1`
   text-align: center;
   color: white;
 `
+
+export const Loading = styled.span`
+  font-size: 16px;
+  color: white;
+`
+
+export const Error = styled.span`
+  font-size: 16px;
+  color: red;
+`
