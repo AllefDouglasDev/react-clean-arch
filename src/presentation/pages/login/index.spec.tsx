@@ -1,6 +1,8 @@
 import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
 import { AuthenticationSpy } from '@/presentation/test/MockAuthentication'
-import { render, screen } from '@testing-library/react'
+import { authenticationSchema } from '@/presentation/validations/yup/AuthenticationSchema'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 
@@ -10,14 +12,14 @@ const makeSut = () => {
   const authenticationSpy = new AuthenticationSpy()
   const sut = render(
     <MemoryRouter initialEntries={['/sign-in']}>
-      <LoginPage authentication={authenticationSpy} />
+      <LoginPage authentication={authenticationSpy} validation={yupResolver(authenticationSchema)} />
     </MemoryRouter>
   )
   return { sut, authenticationSpy }
 }
 
 const fillValidForm = async () => {
-  const email = 'email@email.com'
+  const email = 'example@gmail.com'
   const password = 'password'
   const emailElement = screen.getByPlaceholderText('email')
   const passwordElement = screen.getByPlaceholderText('password')
@@ -53,10 +55,12 @@ describe("LoginForm", () => {
     await fillValidForm()
     const submitBtn = screen.getByRole('button', { name: 'login' })
 
-    await userEvent.click(submitBtn) 
+    userEvent.click(submitBtn) 
 
-    const loadingElement = screen.getByText(/loading.../i)
-    expect(loadingElement).toBeDefined()
+    await waitFor(() => {
+      const loadingElement = screen.getByText(/loading.../i)
+      expect(loadingElement).toBeDefined()
+    })
   })
 
   it.skip("should render error message when authentication returns error", async () => {

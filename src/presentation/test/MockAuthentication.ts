@@ -7,7 +7,7 @@ export class AuthenticationSpy implements Authentication {
 
   async login(input: Authentication.Input): Promise<Authentication.Output> {
     this.input = input
-      this.callsCount++
+    this.callsCount++
     return Promise.resolve(this.output)
   }
 }
