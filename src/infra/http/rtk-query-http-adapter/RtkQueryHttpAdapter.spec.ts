@@ -13,12 +13,14 @@ class RtkErrorStub extends Error {
   }
 }
 
+const makeRequestData = () => ({
+  url: 'any-url',
+  body: { anyData: 'any-data' }
+})
+
 describe('RtkQueryHttpAdapter', () => {
   it('should call mutation with correct values', async () => {
-    const request = {
-      url: 'any-url',
-      body: { anyData: 'any-data' }
-    }
+    const request = makeRequestData()
     let params: any
     const mutationSpy = (args: any) => {
       params = args
@@ -38,10 +40,7 @@ describe('RtkQueryHttpAdapter', () => {
   })
 
   it('should return the correct status code and body', async () => {
-    const request = {
-      url: 'any-url',
-      body: { anyData: 'any-data' }
-    }
+    const request = makeRequestData()
     const mutationSpy = () => {
       return {
         unwrap: async () => ({
@@ -62,10 +61,7 @@ describe('RtkQueryHttpAdapter', () => {
   })
 
   it('should return the error status code and error message into the body', async () => {
-    const request = {
-      url: 'any-url',
-      body: { anyData: 'any-data' }
-    }
+    const request = makeRequestData()
     const error = new RtkErrorStub()
     const mutationSpy = () => {
       return {
@@ -82,5 +78,13 @@ describe('RtkQueryHttpAdapter', () => {
       statusCode: error.status,
       body: error.data.error
     })
+  })
+
+  it('should throw error when try to call post without define mutation', async () => {
+    const sut = new RtkQueryHttpAdapter()
+
+    const promise = sut.post(makeRequestData())
+  
+    await expect(promise).rejects.toThrow(new Error('Endpoint mutation is missing'))
   })
 })
