@@ -1,4 +1,5 @@
 import { InvalidCredentialsError } from '@/domain/errors/InvalidCredentialsError'
+import { AuthenticationProvider } from '@/presentation/hooks/usecases/useAuthentication'
 import { AuthenticationSpy } from '@/presentation/test/MockAuthentication'
 import { authenticationSchema } from '@/presentation/validations/yup/AuthenticationSchema'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -12,7 +13,9 @@ const makeSut = () => {
   const authenticationSpy = new AuthenticationSpy()
   const sut = render(
     <MemoryRouter initialEntries={['/sign-in']}>
-      <LoginPage authentication={authenticationSpy} validation={yupResolver(authenticationSchema)} />
+      <AuthenticationProvider value={authenticationSpy}>
+        <LoginPage validation={yupResolver(authenticationSchema)} />
+      </AuthenticationProvider>
     </MemoryRouter>
   )
   return { sut, authenticationSpy }

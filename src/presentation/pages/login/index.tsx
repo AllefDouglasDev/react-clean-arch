@@ -2,18 +2,17 @@ import { Resolver, useForm } from 'react-hook-form'
 import { Button } from '@/presentation/components/Form/Button'
 import { Input } from '@/presentation/components/Form/Input'
 import { Authentication } from '@/domain/usecases/Authentication'
+import { useAuthenticationSubmit } from '@/presentation/hooks/useAuthentication'
 
 import * as S from './styles'
-import { useAuthentication } from '@/presentation/hooks/useAuthentication'
 
 type LoginPageProps = {
-  authentication: Authentication
   validation: Resolver<Authentication.Input>
 }
 
-export default function LoginPage({ authentication, validation }: LoginPageProps) {
+export default function LoginPage({ validation }: LoginPageProps) {
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: validation })
-  const { isLoading, errorMessage, onSubmit } = useAuthentication({ authentication })
+  const { isLoading, errorMessage, onSubmit } = useAuthenticationSubmit()
 
   return (
     <S.Wrapper>
@@ -37,7 +36,6 @@ export default function LoginPage({ authentication, validation }: LoginPageProps
         {isLoading && <S.Loading>loading...</S.Loading>}
         {errorMessage && <S.Error>{errorMessage}</S.Error>}
       </S.Form>
-
     </S.Wrapper>
   )
 }

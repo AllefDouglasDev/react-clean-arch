@@ -1,14 +1,12 @@
-import { Authentication } from "@/domain/usecases/Authentication"
 import { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { routes } from "../router/routes"
+import { Authentication } from "@/domain/usecases/Authentication"
+import { routes } from "@/presentation/router/routes"
+import { useAuthentication } from "./usecases/useAuthentication"
 
-type UseAuthenticationProps = {
-  authentication: Authentication
-}
-
-export const useAuthentication = ({ authentication }: UseAuthenticationProps) => {
+export const useAuthenticationSubmit = () => {
   const navigate = useNavigate()
+  const authentication = useAuthentication()
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
